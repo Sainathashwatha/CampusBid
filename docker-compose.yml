@@ -1,0 +1,55 @@
+version: "3.8"
+
+ 
+services:
+
+  # ── MySQL ─────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: auction_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: auction123      # ← use this as MYSQL_PASSWORD in .env
+      MYSQL_DATABASE: auction_app          # ← auto-creates the database
+    ports:
+      - "3307:3306"                        # your app connects on localhost:3307
+    volumes:
+      - mysql_data:/var/lib/mysql          # data persists even after docker-compose down
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 5
+
+  # ── MongoDB ───────────────────────────────────────────────────────
+  mongodb:
+    image: mongo:7.0
+    container_name: auction_mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"                      # your app connects on localhost:27017
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      timeout: 10s
+      retries: 5
+
+  # ── Redis ─────────────────────────────────────────────────────────
+  redis:
+    image: redis:7.2-alpine                # alpine = smaller image
+    container_name: auction_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"                        # your app connects on localhost:6379
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 5s
+      retries: 5
+
+# Named volumes — Docker manages where data is stored on your machine
+volumes:
+  mysql_data:
+  mongo_data:
+  redis_data:
