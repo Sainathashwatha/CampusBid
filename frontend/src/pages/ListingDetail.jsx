@@ -9,24 +9,7 @@ import { BidHistory } from '../components/auction/BidHistory.jsx'
 import { CountdownTimer } from '../components/auction/CountdownTimer.jsx'
 import { Badge, Spinner } from '../components/ui/index.jsx'
 
-/*
-  ListingDetail — the live auction page
-  ───────────────────────────────────────
-  This page does 3 things simultaneously:
-  1. Fetches listing data from backend on load
-  2. Connects Socket.io to receive real-time bid events
-  3. Shows a live countdown timer
-
-  When NEW_BID event arrives:
-  → currentPrice state updates instantly
-  → bids list updates with the new bid at the top
-  → No API call needed — Socket.io delivered the data
-
-  When AUCTION_ENDED arrives:
-  → isEnded state → true
-  → BidBox disables
-  → Winner banner shows
-*/
+ 
 export const ListingDetail = () => {
   const { id } = useParams()
 
